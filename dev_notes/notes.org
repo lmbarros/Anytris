@@ -1,0 +1,18 @@
+#+STARTUP: overview hidestars odd
+
+* Tetris
+*** Tetris Wiki
+    - [2013-09-06 Fri 10:01] The [[http://tetris.wikia.com/wiki/Tetris_Wiki][Tetris Wiki]] seems to have all
+      information I may need.
+*** Playfield
+    - [2013-09-06 Fri 10:04] Standard playfield is 10 blocks wide and
+      at least 20 blocks high. At least two additional block rows
+      exists "hiden", over the 20 visible ones. This is the "vanish
+      zone".
+* Window size
+  - [2013-09-06 Fri 11:18] Currently, no decent full screen support in
+    FewDee. My Laptop screen is 1280x800. Making the game work in
+    1024x768 seems good.
+  - [2013-09-06 Fri 11:19] So, blocks of around 20x20 pixels.
+  - [2013-09-06 Fri 14:24] Went with blocks of 25x25 pixels to begin
+    with.
