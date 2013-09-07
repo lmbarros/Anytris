@@ -9,6 +9,9 @@
 module anytris.in_game_state;
 
 import fewdee.all;
+import anytris.constants;
+import anytris.playfield;
+
 
 /// The "in game" state -- where the fun lives!
 public class InGameState: GameState
@@ -17,8 +20,7 @@ public class InGameState: GameState
    public this()
    {
       // Put resources in easy to access variables
-      _bmpPlayField = ResourceManager.bitmaps["playfield"];
-      _bmpBlock = ResourceManager.bitmaps["block"];
+      _bmpPlayfield = ResourceManager.bitmaps["playfield"];
       _musicBG = ResourceManager.streams["inGame"];
 
       // Quit if "ESC" is pressed.
@@ -36,9 +38,12 @@ public class InGameState: GameState
          delegate(in ref ALLEGRO_EVENT event)
          {
             al_clear_to_color(al_map_rgb(0, 0, 0));
-            al_draw_bitmap(_bmpPlayField, 0.0, 0.0, 0);
-            al_draw_bitmap(_bmpBlock, 400.0, 400.0, 0);
+            al_draw_bitmap(_bmpPlayfield, 0.0, 0.0, 0);
+            _playfield.draw();
          });
+
+      // Initialize the playfield
+      _playfield = new Playfield();
 
       // Start the background music
       _musicBG.play();
@@ -50,12 +55,12 @@ public class InGameState: GameState
       _musicBG.stop();
    }
 
-   /// The bitmap with the play field.
-   Bitmap _bmpPlayField;
-
-   /// The bitmap with the block that made up pieces.
-   Bitmap _bmpBlock;
+   /// The bitmap with the playfield.
+   private Bitmap _bmpPlayfield;
 
    /// The background music.
    private AudioStream _musicBG;
+
+   /// The playfield.
+   Playfield _playfield;
 }
