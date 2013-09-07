@@ -1,0 +1,13 @@
+{
+   "name": "anytris",
+   "description": "Tetris was Tetris for a reason",
+   "authors": ["Leandro Motta Barros"],
+   "homepage": "https://bitbucket.org/lmb/anytris",
+   "license": "Zlib",
+
+   "targetType": "executable",
+   "targetName": "AnyTris",
+   "libs-posix": ["allegro", "allegro_image", "allegro_font", "allegro_ttf",
+                  "allegro_primitives", "allegro_dialog", "allegro_audio",
+                  "allegro_acodec", "allegro_color" ],
+}
