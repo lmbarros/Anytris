@@ -8,15 +8,41 @@
 
 module anytris.game;
 
-import fewdee.all;
 import anytris.cell_state;
 import anytris.constants;
-import anytris.input;
 import anytris.piece;
 
 
 /// Time, in seconds, to drop the piece by one row.
-private enum dropTime = 0.5;
+private enum dropTime = 0.2;
+
+
+/// The states the piece can be in.
+private enum PieceState
+{
+   /// Piece is falling.
+   FALLING,
+
+   /**
+    * Piece is touching blocks underneath it. It still can be moved one block
+    * left or right until it locks in place.
+    */
+   TOUCHING,
+}
+
+
+/**
+ * Are the given coordinates valid playfield coordinates?
+ *
+ * In other words: can we use them to index $(_playfield)?
+ */
+private bool validPlayfieldCoords(size_t y, size_t x)
+{
+   return x > 0
+      && x < PLAYFIELD_WIDTH
+      && y > 0
+      && y < PLAYFIELD_HEIGHT;
+}
 
 
 /// The game logic, rules and execution.
@@ -25,15 +51,7 @@ public class Game
    /// Constructs the $(D Game).
    public this()
    {
-      _piece = makePiece(0);
-      _piece.x = 0;
-      _piece.y = PLAYFIELD_VISIBLE_HEIGHT;
-
-      with (Commands)
-      {
-         InputManager.addCommandHandler(MOVE_LEFT, &movePieceLeft);
-         InputManager.addCommandHandler(MOVE_RIGHT, &movePieceRight);
-      }
+      createPiece();
    }
 
    /**
@@ -48,27 +66,76 @@ public class Game
       _timeToDrop -= deltaTime;
 
       if (_timeToDrop <= 0)
+      {
          dropPiece();
+         _timeToDrop += dropTime;
+      }
 
       return !isGameOver;
    }
 
-   /// Handles $(D MOVE_LEFT) commands.
-   private final void movePieceLeft(in ref InputHandlerParam param)
+   /// Creates a new piece and make it fall.
+   private final void createPiece()
    {
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      // xxxxxxxxx check for collisions with blocks
-      if (_piece.x + _piece.minX > 0)
-         _piece.x = _piece.x - 1;
+      _piece = makePiece(0);
+      _piece.x = 0;
+      _piece.y = PLAYFIELD_VISIBLE_HEIGHT;
+   }
+
+   /// Handles $(D MOVE_LEFT) commands.
+   public final void movePieceLeft()
+   {
+      // Cannot move beyond the playfield left limit
+      if (_piece.x + _piece.minX <= 0)
+         return;
+
+      // Check for collisions with neighboring blocks
+      const len = _piece.grid.length;
+      foreach(i; 0..len) foreach(j; 0..len)
+      {
+         if (!_piece.grid[i][j])
+            continue;
+
+         const pfx = _piece.x + j - 1;
+         const pfy = _piece.y + i;
+
+         if (validPlayfieldCoords(pfy, pfx)
+             && _playfield[pfy][pfx] != CellState.EMPTY)
+         {
+            return;
+         }
+      }
+
+      // No collisions, move
+      _piece.x = _piece.x - 1;
    }
 
    /// Handles $(D MOVE_RIGHT) commands.
-   private final void movePieceRight(in ref InputHandlerParam param)
+   public final void movePieceRight()
    {
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      // xxxxxxxxx check for collisions with blocks
-      if (_piece.x + piece.maxX + 1 < PLAYFIELD_WIDTH)
-         _piece.x = _piece.x + 1;
+      // Cannot move beyond the playfield right limit
+      if (_piece.x + piece.maxX + 1 >= PLAYFIELD_WIDTH)
+         return;
+
+      // Check for collisions with neighboring blocks
+      const len = _piece.grid.length;
+      foreach(i; 0..len) foreach(j; 0..len)
+      {
+         if (!_piece.grid[i][j])
+            continue;
+
+         const pfx = _piece.x + j + 1;
+         const pfy = _piece.y + i;
+
+         if (validPlayfieldCoords(pfy, pfx)
+             && _playfield[pfy][pfx] != CellState.EMPTY)
+         {
+            return;
+         }
+      }
+
+      // No collisions, move
+      _piece.x = _piece.x + 1;
    }
 
    /// Did the player lose?
@@ -87,15 +154,60 @@ public class Game
    private final void dropPiece()
    {
       if (canDropPiece)
+      {
          _piece.y = _piece.y - 1;
-      _timeToDrop += dropTime;
+      }
+      else
+      {
+         mergePieceWithPlayfield();
+         createPiece();
+      }
    }
 
    /// Can the piece drop by one row without colliding with existing blocks?
    private final @property bool canDropPiece()
    {
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      return _piece.y + piece.minY > 0;
+      // If reached the bottom of the playfield, cannot drop
+      if (_piece.y + piece.minY <= 0)
+         return false;
+
+      // If there is a playfield block below any block piece, cannot drop
+      const len = _piece.grid.length;
+      foreach(i; 0..len) foreach(j; 0..len)
+      {
+         if (!_piece.grid[i][j])
+            continue;
+
+         const pfx = _piece.x + j;
+         const pfy = _piece.y + i - 1;
+
+         if (validPlayfieldCoords(pfy, pfx)
+             && _playfield[pfy][pfx] != CellState.EMPTY)
+         {
+            return false;
+         }
+      }
+
+      // Else, can drop
+      return true;
+   }
+
+   /**
+    * Adds the blocks forming the $(D _piece) to the playfield.
+    *
+    * Also sets $(D _piece) to $(D null), just be sure that nobody will try to
+    * use it again.
+    */
+   private final void mergePieceWithPlayfield()
+   {
+      const len = _piece.grid.length;
+      foreach(i; 0..len) foreach(j; 0..len)
+      {
+         if (_piece.grid[i][j])
+            _playfield[_piece.y + i][_piece.x + j] = _piece.color;
+      }
+
+      _piece = null;
    }
 
    /*
@@ -131,6 +243,9 @@ public class Game
 
    /// Ditto
    private Piece _piece;
+
+   /// The piece state.
+   private PieceState _pieceState;
 
    /// Time remaining until the next time the piece drops one row.
    private double _timeToDrop = dropTime;

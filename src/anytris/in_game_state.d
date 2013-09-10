@@ -11,6 +11,7 @@ module anytris.in_game_state;
 import fewdee.all;
 import anytris.game;
 import anytris.drawing;
+import anytris.input;
 
 
 /// The "in game" state -- where the fun happens!
@@ -23,6 +24,23 @@ public class InGameState: GameState
 
       // Put resources in easy to access variables
       _musicBG = ResourceManager.streams["inGame"];
+
+      // Handle game events
+      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      // xxxxxxxxx store ids, remove upon destruction
+      InputManager.addCommandHandler(
+         Commands.MOVE_LEFT,
+         delegate(in ref InputHandlerParam param)
+         {
+            _game.movePieceLeft();
+         });
+
+      InputManager.addCommandHandler(
+         Commands.MOVE_RIGHT,
+         delegate(in ref InputHandlerParam param)
+         {
+            _game.movePieceRight();
+         });
 
       // Quit if "ESC" is pressed.
       addHandler(
