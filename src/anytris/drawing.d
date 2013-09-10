@@ -76,7 +76,7 @@ body
 
 
 /// Draw the piece at the given playfield coordinates.
-private void draw(const Piece piece, uint x, uint y)
+private void draw(const Piece piece)
 {
    enum s = BLOCK_SIZE;
    foreach(i, col; piece.grid)
@@ -84,7 +84,7 @@ private void draw(const Piece piece, uint x, uint y)
       foreach(j, cell; col)
       {
          if (cell)
-            drawBlockPlayfield(y + j, x + i, piece.color);
+            drawBlockPlayfield(piece.y + j, piece.x + i, piece.color);
       }
    }
 }
@@ -107,5 +107,5 @@ public void draw(const Game game)
    }
 
    // The piece
-   game.piece.draw(5, 5);
+   game.piece.draw();
 }

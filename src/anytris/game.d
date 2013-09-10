@@ -13,67 +13,55 @@ import anytris.constants;
 import anytris.piece;
 
 
+/// Time, in seconds, to drop the piece by one row.
+private enum dropTime = 0.5;
+
+
 /// The game logic, rules and execution.
 public class Game
 {
    /// Constructs the $(D Game).
    public this()
    {
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
       _piece = makePiece(0);
-
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      foreach(i; 0..PLAYFIELD_WIDTH)
-      {
-         foreach(j; 0..PLAYFIELD_HEIGHT)
-         {
-            switch (j)
-            {
-               import anytris.cell_state;
-
-               case 0: .. case 3:
-                  _playfield[j][i] = CellState.RED;
-                  break;
-
-               case 4: .. case 7:
-                  _playfield[j][i] = CellState.GREEN;
-                  break;
-
-               case 8: .. case 11:
-                  _playfield[j][i] = CellState.BLUE;
-                  break;
-
-               case 12: .. case 15:
-                  _playfield[j][i] = CellState.YELLOW;
-                  break;
-
-               case 16: .. case 19:
-                  _playfield[j][i] = CellState.PINK;
-                  break;
-
-               case 20: .. case 23:
-                  _playfield[j][i] = CellState.CYAN;
-                  break;
-
-               default:
-                  _playfield[j][i] = CellState.EMPTY;
-                  break;
-            }
-         }
-      }
+      _piece.x = 0;
+      _piece.y = PLAYFIELD_HEIGHT - _piece.size;
    }
 
-   /// Updates the game state by $(D deltaTime) seconds.
-   public final void tick(double deltaTime)
+   /**
+    * Updates the game state by $(D deltaTime) seconds.
+    *
+    * Returns:
+    *    $(D true) if we shall keep playing the game; $(D false) if not (AKA
+    *    "game over").
+    */
+   public final bool tick(double deltaTime)
    {
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      _timeToDrop -= deltaTime;
+
+      if (_timeToDrop <= 0)
+         dropPiece();
+
+      return !isGameOver;
    }
 
    /// Did the player lose?
-   public @property bool isGameOver()
+   private @property bool isGameOver()
    {
       // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
       return false;
+   }
+
+   /**
+    * Drops a piece by one row.
+    *
+    * This does also does all the checks for game over, for filled rows
+    * (including removing the filled rows), etc.
+    */
+   private final void dropPiece()
+   {
+      _piece.y = _piece.y - 1;
+      _timeToDrop += dropTime;
    }
 
    /*
@@ -109,4 +97,7 @@ public class Game
 
    /// Ditto
    private Piece _piece;
+
+   /// Time remaining until the next time the piece drops one row.
+   private double _timeToDrop = dropTime;
 }

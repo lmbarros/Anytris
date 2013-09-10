@@ -32,6 +32,15 @@ public class Piece
       return this;
    }
 
+   /**
+    * The size of the piece bounding square; the number of blocks in each of its
+    * sides.
+    */
+   public final @property size_t size() inout
+   {
+      return _grid.length;
+   }
+
    /// The square grid defining the piece; $(D true) marks filled blocks.
    public final @property const(bool[][]) grid() inout
    {
@@ -46,6 +55,36 @@ public class Piece
    {
       return _color;
    }
+
+   /// The piece's horizontal coordinate.
+   public @property uint x() inout
+   {
+      return _x;
+   }
+
+   /// Ditto
+   public @property void x(uint value)
+   {
+      _x = value;
+   }
+
+   /// Ditto
+   private uint _x;
+
+   /// The piece's vertical coordinate.
+   public @property uint y() inout
+   {
+      return _y;
+   }
+
+   /// Ditto
+   public @property void y(uint value)
+   {
+      _y = value;
+   }
+
+   /// Ditto
+   private uint _y;
 
    /// Ditto
    CellState _color;

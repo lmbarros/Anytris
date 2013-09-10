@@ -33,6 +33,14 @@ public class InGameState: GameState
                popState();
          });
 
+      // Tick
+      addHandler(
+         FEWDEE_EVENT_TICK,
+         delegate(in ref ALLEGRO_EVENT event)
+         {
+            _game.tick(event.user.deltaTime);
+         });
+
       // Draw
       addHandler(
          FEWDEE_EVENT_DRAW,
