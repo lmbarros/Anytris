@@ -14,6 +14,15 @@ import anytris.cell_state;
 /**
  * A piece; a polyomino.
  *
+ * A $(D Piece) has a bounding square with sides measuring $(D size)
+ * blocks. This square defines a grid, in which every cell may contain a block
+ * or be empty; you can access this grid using $(D grid).
+ *
+ * The bounding square mentioned in the previous paragraph is not necessarily
+ * tight. In fact, typically, there is some space between the piece and some of
+ * the square sides. To obtain the effective limits of the piece within the
+ * grid, use $(D minX), $(D maxX), $(D minY) and $(D maxY).
+ *
  * See_also: https://en.wikipedia.org/wiki/Polyomino.
  */
 public class Piece
@@ -41,7 +50,15 @@ public class Piece
       return _grid.length;
    }
 
-   /// The square grid defining the piece; $(D true) marks filled blocks.
+   /**
+    * The square grid defining the piece.
+    *
+    * Indexing is consistent with the playfield: the first index is the row, the
+    * second is the column. Also consistently with the playfield, indexing is
+    * done as $(D grid[row][column].
+    *
+    * $(D true) marks filled blocks, $(D false) marks empty spaces.
+    */
    public final @property const(bool[][]) grid() inout
    {
       return _grid;
@@ -86,6 +103,42 @@ public class Piece
    /// Ditto
    private uint _y;
 
+   /// The smallest horizontal coordinate within $(D grid) with a block.
+   public @property size_t minX() inout
+   {
+      return _minX;
+   }
+
+   /// Ditto
+   private size_t _minX;
+
+   /// The largest horizontal coordinate within $(D grid) with a block.
+   public @property size_t maxX() inout
+   {
+      return _maxX;
+   }
+
+   /// Ditto
+   private size_t _maxX;
+
+   /// The smallest vertical coordinate within $(D grid) with a block.
+   public @property size_t minY() inout
+   {
+      return _minY;
+   }
+
+   /// Ditto
+   private size_t _minY;
+
+   /// The largest vertical coordinate within $(D grid) with a block.
+   public @property size_t maxY() inout
+   {
+      return _maxY;
+   }
+
+   /// Ditto
+   private size_t _maxY;
+
    /// Ditto
    CellState _color;
 }
@@ -104,11 +157,16 @@ public Piece makePiece(uint numBlocks)
    foreach (ref col; piece._grid)
       col.length = 4;
 
-   piece._grid[1][3] = true;
-   piece._grid[2][0] = true;
-   piece._grid[2][1] = true;
+   piece._grid[3][1] = true;
+   piece._grid[0][2] = true;
+   piece._grid[1][2] = true;
    piece._grid[2][2] = true;
-   piece._grid[2][3] = true;
+   piece._grid[3][2] = true;
+
+   piece._minX = 1;
+   piece._maxX = 2;
+   piece._minY = 0;
+   piece._maxY = 3;
 
    return piece;
 }

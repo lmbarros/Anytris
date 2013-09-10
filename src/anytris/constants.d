@@ -38,14 +38,20 @@ public enum
    /// The width of the playfield, in blocks
    PLAYFIELD_WIDTH = 10,
 
-   /// The height of the playfield, in blocks (including the vanish zone).
-   PLAYFIELD_HEIGHT = 22,
-
-   /// The height of the vanish zone, in blocks.
-   PLAYFIELD_VANISH_ZONE = 2,
-
    /// The maximum allowed number of blocks per piece the game supports.
    MAX_BLOCKS_PER_PIECE = 10,
+
+   /// The height of the vanish zone, in blocks.
+   PLAYFIELD_VANISH_ZONE = MAX_BLOCKS_PER_PIECE,
+
+   /// The height of the playfield, in blocks (including the vanish zone).
+   PLAYFIELD_HEIGHT = 20 + PLAYFIELD_VANISH_ZONE,
+
+   /**
+    * The height of the visible playfield area (that is, excluding the vanish
+    * zone).
+    */
+   PLAYFIELD_VISIBLE_HEIGHT = PLAYFIELD_HEIGHT - PLAYFIELD_VANISH_ZONE,
 }
 
 static assert(MAX_BLOCKS_PER_PIECE <= PLAYFIELD_WIDTH);

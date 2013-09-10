@@ -9,6 +9,7 @@
 import fewdee.all;
 import anytris.constants;
 import anytris.in_game_state;
+import anytris.input;
 import anytris.resources;
 
 
@@ -20,6 +21,9 @@ void main()
 
       // Load resources
       loadResources();
+
+      // Sets the input up
+      setupInput();
 
       // Create display
       DisplayParams dp;

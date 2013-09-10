@@ -8,8 +8,10 @@
 
 module anytris.game;
 
+import fewdee.all;
 import anytris.cell_state;
 import anytris.constants;
+import anytris.input;
 import anytris.piece;
 
 
@@ -25,7 +27,13 @@ public class Game
    {
       _piece = makePiece(0);
       _piece.x = 0;
-      _piece.y = PLAYFIELD_HEIGHT - _piece.size;
+      _piece.y = PLAYFIELD_VISIBLE_HEIGHT;
+
+      with (Commands)
+      {
+         InputManager.addCommandHandler(MOVE_LEFT, &movePieceLeft);
+         InputManager.addCommandHandler(MOVE_RIGHT, &movePieceRight);
+      }
    }
 
    /**
@@ -45,6 +53,24 @@ public class Game
       return !isGameOver;
    }
 
+   /// Handles $(D MOVE_LEFT) commands.
+   private final void movePieceLeft(in ref InputHandlerParam param)
+   {
+      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      // xxxxxxxxx check for collisions with blocks
+      if (_piece.x + _piece.minX > 0)
+         _piece.x = _piece.x - 1;
+   }
+
+   /// Handles $(D MOVE_RIGHT) commands.
+   private final void movePieceRight(in ref InputHandlerParam param)
+   {
+      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      // xxxxxxxxx check for collisions with blocks
+      if (_piece.x + piece.maxX + 1 < PLAYFIELD_WIDTH)
+         _piece.x = _piece.x + 1;
+   }
+
    /// Did the player lose?
    private @property bool isGameOver()
    {
@@ -60,8 +86,16 @@ public class Game
     */
    private final void dropPiece()
    {
-      _piece.y = _piece.y - 1;
+      if (canDropPiece)
+         _piece.y = _piece.y - 1;
       _timeToDrop += dropTime;
+   }
+
+   /// Can the piece drop by one row without colliding with existing blocks?
+   private final @property bool canDropPiece()
+   {
+      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      return _piece.y + piece.minY > 0;
    }
 
    /*

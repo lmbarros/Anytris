@@ -69,22 +69,22 @@ body
 
    drawBlockScreen(PLAYFIELD_LEFT + x * BLOCK_SIZE,
                    PLAYFIELD_TOP
-                      + (PLAYFIELD_HEIGHT - y - 1 - PLAYFIELD_VANISH_ZONE)
+                      + (PLAYFIELD_VISIBLE_HEIGHT - y - 1)
                       * BLOCK_SIZE,
                    color);
 }
 
 
-/// Draw the piece at the given playfield coordinates.
+/// Draw the piece in the playfield, at its current coordinates.
 private void draw(const Piece piece)
 {
    enum s = BLOCK_SIZE;
-   foreach(i, col; piece.grid)
+   foreach(i, row; piece.grid)
    {
-      foreach(j, cell; col)
+      foreach(j, cell; row)
       {
          if (cell)
-            drawBlockPlayfield(piece.y + j, piece.x + i, piece.color);
+            drawBlockPlayfield(piece.y + i, piece.x + j, piece.color);
       }
    }
 }
