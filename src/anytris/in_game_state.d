@@ -56,7 +56,12 @@ public class InGameState: GameState
          FEWDEE_EVENT_TICK,
          delegate(in ref ALLEGRO_EVENT event)
          {
-            _game.tick(event.user.deltaTime);
+            if (!_game.tick(event.user.deltaTime))
+            {
+               import std.stdio;
+               writefln("Game over!");
+               popState();
+            }
          });
 
       // Draw

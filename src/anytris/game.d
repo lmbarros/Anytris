@@ -71,7 +71,7 @@ public class Game
          _timeToDrop += dropTime;
       }
 
-      return !isGameOver;
+      return !_gameOver;
    }
 
    /// Creates a new piece and make it fall.
@@ -112,13 +112,6 @@ public class Game
       _piece.x = _piece.x + 1;
    }
 
-   /// Did the player lose?
-   private @property bool isGameOver()
-   {
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      return false;
-   }
-
    /**
     * Drops a piece by one row.
     *
@@ -133,8 +126,15 @@ public class Game
       }
       else
       {
-         mergePieceWithPlayfield();
-         createPiece();
+         if (piece.y >= PLAYFIELD_VISIBLE_HEIGHT)
+         {
+            _gameOver = true;
+         }
+         else
+         {
+            mergePieceWithPlayfield();
+            createPiece();
+         }
       }
    }
 
@@ -236,4 +236,7 @@ public class Game
 
    /// Time remaining until the next time the piece drops one row.
    private double _timeToDrop = dropTime;
+
+   /// Is the game over?
+   private bool _gameOver = false;
 }
