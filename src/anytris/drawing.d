@@ -57,7 +57,7 @@ body
  * Passing a $(D y) coordinate larger than the playfield area (or in the vanish
  * areas) is OK -- the block will not be actually drawn in this case.
  */
-private void drawBlockPlayfield(uint x, uint y, CellState color)
+private void drawBlockPlayfield(uint y, uint x, CellState color)
 in
 {
    assert(x < PLAYFIELD_WIDTH);
@@ -84,7 +84,7 @@ private void draw(const Piece piece, uint x, uint y)
       foreach(j, cell; col)
       {
          if (cell)
-            drawBlockPlayfield(x + i, y + j, piece.color);
+            drawBlockPlayfield(y + j, x + i, piece.color);
       }
    }
 }
@@ -97,9 +97,9 @@ public void draw(const Game game)
    al_draw_bitmap(ResourceManager.bitmaps["playfield"], 0.0, 0.0, 0);
 
    // The blocks
-   foreach(i, col; game.playfield)
+   foreach(i, row; game.playfield)
    {
-      foreach(j, state; col)
+      foreach(j, state; row)
       {
          if (state != CellState.EMPTY)
             drawBlockPlayfield(i, j, state);

@@ -32,31 +32,31 @@ public class Game
                import anytris.cell_state;
 
                case 0: .. case 3:
-                  _playfield[i][j] = CellState.RED;
+                  _playfield[j][i] = CellState.RED;
                   break;
 
                case 4: .. case 7:
-                  _playfield[i][j] = CellState.GREEN;
+                  _playfield[j][i] = CellState.GREEN;
                   break;
 
                case 8: .. case 11:
-                  _playfield[i][j] = CellState.BLUE;
+                  _playfield[j][i] = CellState.BLUE;
                   break;
 
                case 12: .. case 15:
-                  _playfield[i][j] = CellState.YELLOW;
+                  _playfield[j][i] = CellState.YELLOW;
                   break;
 
                case 16: .. case 19:
-                  _playfield[i][j] = CellState.PINK;
+                  _playfield[j][i] = CellState.PINK;
                   break;
 
                case 20: .. case 23:
-                  _playfield[i][j] = CellState.CYAN;
+                  _playfield[j][i] = CellState.CYAN;
                   break;
 
                default:
-                  _playfield[i][j] = CellState.EMPTY;
+                  _playfield[j][i] = CellState.EMPTY;
                   break;
             }
          }
@@ -86,18 +86,20 @@ public class Game
     * towards the right side. Vertical coordinates start at 0 (the bottom side)
     * and grow towards the top.
     *
-    * Empty cells are $(D null).
+    * Note that indexing is made as $(D playfield[row][column]), which is like
+    * "$(I y), $(I x)" instead of "$(I x), $(I y)". The reason for this is
+    * easing the assignment of whole rows, as is done when cleaning filled rows.
     *
     * TODO: Are the blocks for the falling piece included here?
     */
-   public @property const(CellState[PLAYFIELD_HEIGHT][PLAYFIELD_WIDTH])
+   public @property const(CellState[PLAYFIELD_WIDTH][PLAYFIELD_HEIGHT])
    playfield() inout
    {
       return _playfield;
    }
 
    /// Ditto
-   private CellState[PLAYFIELD_HEIGHT][PLAYFIELD_WIDTH] _playfield;
+   private CellState[PLAYFIELD_WIDTH][PLAYFIELD_HEIGHT] _playfield;
 
    /// The falling piece.
    public @property const(Piece) piece() inout
