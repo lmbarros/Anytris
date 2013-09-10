@@ -1,5 +1,5 @@
 /**
- * The "in game" state -- where the fun lives!
+ * The "in game" state -- where the fun happens!
  *
  * License: $(LINK2 http://opensource.org/licenses/zlib-license, Zlib License).
  *
@@ -9,18 +9,19 @@
 module anytris.in_game_state;
 
 import fewdee.all;
-import anytris.constants;
-import anytris.playfield;
+import anytris.game;
+import anytris.drawing;
 
 
-/// The "in game" state -- where the fun lives!
+/// The "in game" state -- where the fun happens!
 public class InGameState: GameState
 {
    /// Constructs the state.
    public this()
    {
+      _game = new Game();
+
       // Put resources in easy to access variables
-      _bmpPlayfield = ResourceManager.bitmaps["playfield"];
       _musicBG = ResourceManager.streams["inGame"];
 
       // Quit if "ESC" is pressed.
@@ -38,12 +39,8 @@ public class InGameState: GameState
          delegate(in ref ALLEGRO_EVENT event)
          {
             al_clear_to_color(al_map_rgb(0, 0, 0));
-            al_draw_bitmap(_bmpPlayfield, 0.0, 0.0, 0);
-            _playfield.draw();
+            _game.draw();
          });
-
-      // Initialize the playfield
-      _playfield = new Playfield();
 
       // Start the background music
       _musicBG.play();
@@ -55,12 +52,9 @@ public class InGameState: GameState
       _musicBG.stop();
    }
 
-   /// The bitmap with the playfield.
-   private Bitmap _bmpPlayfield;
+   /// The game.
+   private Game _game;
 
    /// The background music.
    private AudioStream _musicBG;
-
-   /// The playfield.
-   Playfield _playfield;
 }
