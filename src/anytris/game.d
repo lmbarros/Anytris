@@ -90,21 +90,8 @@ public class Game
          return;
 
       // Check for collisions with neighboring blocks
-      const len = _piece.grid.length;
-      foreach(i; 0..len) foreach(j; 0..len)
-      {
-         if (!_piece.grid[i][j])
-            continue;
-
-         const pfx = _piece.x + j - 1;
-         const pfy = _piece.y + i;
-
-         if (validPlayfieldCoords(pfy, pfx)
-             && _playfield[pfy][pfx] != CellState.EMPTY)
-         {
-            return;
-         }
-      }
+      if (pieceColliding(0, -1))
+         return;
 
       // No collisions, move
       _piece.x = _piece.x - 1;
@@ -118,21 +105,8 @@ public class Game
          return;
 
       // Check for collisions with neighboring blocks
-      const len = _piece.grid.length;
-      foreach(i; 0..len) foreach(j; 0..len)
-      {
-         if (!_piece.grid[i][j])
-            continue;
-
-         const pfx = _piece.x + j + 1;
-         const pfy = _piece.y + i;
-
-         if (validPlayfieldCoords(pfy, pfx)
-             && _playfield[pfy][pfx] != CellState.EMPTY)
-         {
-            return;
-         }
-      }
+      if (pieceColliding(0, 1))
+         return;
 
       // No collisions, move
       _piece.x = _piece.x + 1;
@@ -172,21 +146,8 @@ public class Game
          return false;
 
       // If there is a playfield block below any block piece, cannot drop
-      const len = _piece.grid.length;
-      foreach(i; 0..len) foreach(j; 0..len)
-      {
-         if (!_piece.grid[i][j])
-            continue;
-
-         const pfx = _piece.x + j;
-         const pfy = _piece.y + i - 1;
-
-         if (validPlayfieldCoords(pfy, pfx)
-             && _playfield[pfy][pfx] != CellState.EMPTY)
-         {
-            return false;
-         }
-      }
+      if (pieceColliding(-1, 0))
+         return false;
 
       // Else, can drop
       return true;
@@ -208,6 +169,32 @@ public class Game
       }
 
       _piece = null;
+   }
+
+   /**
+    * Checks if the piece will collide if trying to move in a given direction.
+    *
+    * The direction is given by the $(D dy) and $(D dx) parameters.
+    */
+   private final bool pieceColliding(int dy, int dx)
+   {
+      const len = _piece.grid.length;
+      foreach(i; 0..len) foreach(j; 0..len)
+      {
+         if (!_piece.grid[i][j])
+            continue;
+
+         const pfx = _piece.x + j + dx;
+         const pfy = _piece.y + i + dy;
+
+         if (validPlayfieldCoords(pfy, pfx)
+             && _playfield[pfy][pfx] != CellState.EMPTY)
+         {
+            return true;
+         }
+      }
+
+      return false;
    }
 
    /*
