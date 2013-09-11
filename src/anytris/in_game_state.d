@@ -42,6 +42,20 @@ public class InGameState: GameState
             _game.movePieceRight();
          });
 
+      InputManager.addCommandHandler(
+         Commands.ROTATE_CW,
+         delegate(in ref InputHandlerParam param)
+         {
+            _game.rotatePieceCW();
+         });
+
+      InputManager.addCommandHandler(
+         Commands.ROTATE_CCW,
+         delegate(in ref InputHandlerParam param)
+         {
+            _game.rotatePieceCCW();
+         });
+
       // Quit if "ESC" is pressed.
       addHandler(
          ALLEGRO_EVENT_KEY_DOWN,

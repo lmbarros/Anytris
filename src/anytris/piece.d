@@ -27,18 +27,80 @@ import anytris.cell_state;
  */
 public class Piece
 {
+   /**
+    * Constructs the piece.
+    *
+    * Parameters:
+    *    size = The "size" of the piece -- in fact, the size of one of the sides
+    *       of its bounding square.
+    */
+   public this(uint size)
+   {
+      // Allocate the grid
+      _grid.length = size;
+      foreach (ref col; _grid)
+         col.length = size;
+
+      // Use a random color
+      _color = randomColor;
+   }
+
+   /// Partially clones $(D _piece), in preparation for a rotation.
+   private final Piece partialPieceCloneForRotation()
+   {
+      auto piece = new Piece(size);
+
+      piece._color = _color;
+      piece._x = _x;
+      piece._y = _y;
+
+      return piece;
+   }
+
    /// Returns a copy of this piece, rotated in the clockwise direction.
    public final @property Piece clockwise()
    {
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      return this;
+      auto piece = partialPieceCloneForRotation;
+      auto srcY = size - 1;
+      auto srcX = 0;
+      foreach(i; 0..size)
+      {
+         foreach(j; 0..size)
+         {
+            piece._grid[i][j] = _grid[srcX][srcY];
+            ++srcX;
+         }
+
+         --srcY;
+         srcX = 0;
+      }
+
+      piece.setMinsMaxs();
+
+      return piece;
    }
 
    /// Returns a copy of this piece, rotated in the counter-clockwise direction.
    public final @property Piece counterClockwise()
    {
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      return this;
+      auto piece = partialPieceCloneForRotation;
+      auto srcY = 0;
+      auto srcX = size - 1;
+      foreach(i; 0..size)
+      {
+         foreach(j; 0..size)
+         {
+            piece._grid[i][j] = _grid[srcX][srcY];
+            --srcX;
+         }
+
+         ++srcY;
+         srcX = size - 1;
+      }
+
+      piece.setMinsMaxs();
+
+      return piece;
    }
 
    /**
@@ -48,6 +110,27 @@ public class Piece
    public final @property size_t size() inout
    {
       return _grid.length;
+   }
+
+   /**
+    * Computes and sets the $(D _minX), $(D _maxX), $(D _minY) and $(D _maxY)
+    * fields.
+    */
+   public final void setMinsMaxs()
+   {
+      _minX = _minY = size - 1;
+      _maxX = _maxY = 0;
+
+      foreach(y; 0..size) foreach(x; 0..size)
+      {
+         if (grid[y][x])
+         {
+            if (x < _minX) _minX = x;
+            if (x > _maxX) _maxX = x;
+            if (y < _minY) _minY = y;
+            if (y > _maxY) _maxY = y;
+         }
+      }
    }
 
    /**
@@ -74,70 +157,70 @@ public class Piece
    }
 
    /// The piece's horizontal coordinate.
-   public @property uint x() inout
+   public @property int x() inout
    {
       return _x;
    }
 
    /// Ditto
-   public @property void x(uint value)
+   public @property void x(int value)
    {
       _x = value;
    }
 
    /// Ditto
-   private uint _x;
+   private int _x;
 
    /// The piece's vertical coordinate.
-   public @property uint y() inout
+   public @property int y() inout
    {
       return _y;
    }
 
    /// Ditto
-   public @property void y(uint value)
+   public @property void y(int value)
    {
       _y = value;
    }
 
    /// Ditto
-   private uint _y;
+   private int _y;
 
    /// The smallest horizontal coordinate within $(D grid) with a block.
-   public @property size_t minX() inout
+   public @property int minX() inout
    {
       return _minX;
    }
 
    /// Ditto
-   private size_t _minX;
+   private int _minX;
 
    /// The largest horizontal coordinate within $(D grid) with a block.
-   public @property size_t maxX() inout
+   public @property int maxX() inout
    {
       return _maxX;
    }
 
    /// Ditto
-   private size_t _maxX;
+   private int _maxX;
 
    /// The smallest vertical coordinate within $(D grid) with a block.
-   public @property size_t minY() inout
+   public @property int minY() inout
    {
       return _minY;
    }
 
    /// Ditto
-   private size_t _minY;
+   private int _minY;
 
    /// The largest vertical coordinate within $(D grid) with a block.
-   public @property size_t maxY() inout
+   public @property int maxY() inout
    {
       return _maxY;
    }
 
    /// Ditto
-   private size_t _maxY;
+   private int _maxY;
 
    /// Ditto
    CellState _color;
@@ -149,13 +232,7 @@ public Piece makePiece(uint numBlocks)
 {
    // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
    // xxxxxxxxxx just testing....
-   auto piece = new Piece();
-
-   piece._color = CellState.CYAN;
-
-   piece._grid.length = 4;
-   foreach (ref col; piece._grid)
-      col.length = 4;
+   auto piece = new Piece(4);
 
    piece._grid[3][1] = true;
    piece._grid[0][2] = true;
@@ -163,10 +240,7 @@ public Piece makePiece(uint numBlocks)
    piece._grid[2][2] = true;
    piece._grid[3][2] = true;
 
-   piece._minX = 1;
-   piece._maxX = 2;
-   piece._minY = 0;
-   piece._maxY = 3;
+   piece.setMinsMaxs();
 
    return piece;
 }

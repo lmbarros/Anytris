@@ -35,5 +35,11 @@ public void setupInput()
 
       InputManager.addCommandTrigger(
          MOVE_RIGHT, new KeyDownTrigger(ALLEGRO_KEY_RIGHT));
+
+      InputManager.addCommandTrigger(
+         ROTATE_CW, new KeyDownTrigger(ALLEGRO_KEY_X));
+
+      InputManager.addCommandTrigger(
+         ROTATE_CCW, new KeyDownTrigger(ALLEGRO_KEY_Z));
    }
 }

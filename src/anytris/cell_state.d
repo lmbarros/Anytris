@@ -21,3 +21,13 @@ public enum CellState
    CYAN,   /// The cell contains a cyan block.
    COUNT,  /// The number of cell states.
 }
+
+
+/// Returns a random color
+public @property CellState randomColor()
+{
+   import std.random;
+   return cast(CellState)(uniform!"()"(
+                             cast(int)CellState.EMPTY,
+                             cast(int)CellState.COUNT));
+}

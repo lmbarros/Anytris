@@ -36,11 +36,11 @@ private enum PieceState
  *
  * In other words: can we use them to index $(_playfield)?
  */
-private bool validPlayfieldCoords(size_t y, size_t x)
+private bool validPlayfieldCoords(int y, int x)
 {
-   return x > 0
+   return x >= 0
       && x < PLAYFIELD_WIDTH
-      && y > 0
+      && y >= 0
       && y < PLAYFIELD_HEIGHT;
 }
 
@@ -82,7 +82,7 @@ public class Game
       _piece.y = PLAYFIELD_VISIBLE_HEIGHT;
    }
 
-   /// Handles $(D MOVE_LEFT) commands.
+   /// Moves the piece one cell to the left, if possible.
    public final void movePieceLeft()
    {
       // Cannot move beyond the playfield left limit
@@ -97,7 +97,7 @@ public class Game
       _piece.x = _piece.x - 1;
    }
 
-   /// Handles $(D MOVE_RIGHT) commands.
+   /// Moves the piece one cell to the right, if possible.
    public final void movePieceRight()
    {
       // Cannot move beyond the playfield right limit
@@ -110,6 +110,22 @@ public class Game
 
       // No collisions, move
       _piece.x = _piece.x + 1;
+   }
+
+   /// Rotates the piece in the clockwise direction.
+   public final void rotatePieceCW()
+   {
+      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      // xxxxx check if rotation is possible! (no collisions)
+      _piece = _piece.clockwise;
+   }
+
+   /// Rotates the piece in the counter-clockwise direction.
+   public final void rotatePieceCCW()
+   {
+      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      // xxxxx check if rotation is possible! (no collisions)
+      _piece = _piece.counterClockwise;
    }
 
    /**
@@ -216,14 +232,17 @@ public class Game
          if (!_piece.grid[i][j])
             continue;
 
-         const pfx = _piece.x + j + dx;
          const pfy = _piece.y + i + dy;
+         const pfx = _piece.x + j + dx;
 
-         if (validPlayfieldCoords(pfy, pfx)
-             && _playfield[pfy][pfx] != CellState.EMPTY)
-         {
+         /// The coordinates may be invalid because the piece is close to the
+         /// playfield borders; recall that the grid is not tight: there may be
+         /// space around the actual piece.
+         if (!validPlayfieldCoords(pfy, pfx))
+            continue;
+
+         if (_playfield[pfy][pfx] != CellState.EMPTY)
             return true;
-         }
       }
 
       return false;
