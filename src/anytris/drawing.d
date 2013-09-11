@@ -57,9 +57,11 @@ body
  * Passing a $(D y) coordinate larger than the playfield area (or in the vanish
  * areas) is OK -- the block will not be actually drawn in this case.
  */
-private void drawBlockPlayfield(uint y, uint x, CellState color)
+private void drawBlockPlayfield(int y, int x, CellState color)
 in
 {
+   assert(y >= 0);
+   assert(x >= 0);
    assert(x < PLAYFIELD_WIDTH);
 }
 body

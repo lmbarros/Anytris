@@ -112,20 +112,44 @@ public class Game
       _piece.x = _piece.x + 1;
    }
 
+   /// Does $(D piece), at its current coordinates, fit the playfield?
+   public final bool pieceFitsPlayfield(const Piece piece)
+   {
+      foreach(i; 0..piece.size) foreach(j; 0..piece.size)
+      {
+         if (!piece.grid[i][j])
+            continue;
+
+         const pfy = piece.y + i;
+         const pfx = piece.x + j;
+
+         if (!validPlayfieldCoords(pfy, pfx)
+             || _playfield[pfy][pfx] != CellState.EMPTY)
+         {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
    /// Rotates the piece in the clockwise direction.
    public final void rotatePieceCW()
    {
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      // xxxxx check if rotation is possible! (no collisions)
-      _piece = _piece.clockwise;
+      auto newPiece = _piece.clockwise;
+      if (pieceFitsPlayfield(newPiece))
+      {
+         import std.stdio; writefln("CW fits!");
+         _piece = newPiece;
+      }
    }
 
    /// Rotates the piece in the counter-clockwise direction.
    public final void rotatePieceCCW()
    {
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      // xxxxx check if rotation is possible! (no collisions)
-      _piece = _piece.counterClockwise;
+      auto newPiece = _piece.counterClockwise;
+      if (pieceFitsPlayfield(newPiece))
+         _piece = newPiece;
    }
 
    /**
@@ -235,14 +259,11 @@ public class Game
          const pfy = _piece.y + i + dy;
          const pfx = _piece.x + j + dx;
 
-         /// The coordinates may be invalid because the piece is close to the
-         /// playfield borders; recall that the grid is not tight: there may be
-         /// space around the actual piece.
-         if (!validPlayfieldCoords(pfy, pfx))
-            continue;
-
-         if (_playfield[pfy][pfx] != CellState.EMPTY)
+         if (validPlayfieldCoords(pfy, pfx)
+             && _playfield[pfy][pfx] != CellState.EMPTY)
+         {
             return true;
+         }
       }
 
       return false;
