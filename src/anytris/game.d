@@ -133,6 +133,7 @@ public class Game
          else
          {
             mergePieceWithPlayfield();
+            handleLineClears();
             createPiece();
          }
       }
@@ -151,6 +152,37 @@ public class Game
 
       // Else, can drop
       return true;
+   }
+
+   /// Checks for lines clears and handles them.
+   private final void handleLineClears()
+   {
+      // Is a given line filled with blocks?
+      bool isFilledLine(const ref CellState[PLAYFIELD_WIDTH] line)
+      {
+         foreach(cell; line)
+         {
+            if (cell == CellState.EMPTY)
+               return false;
+         }
+
+         return true;
+      }
+
+      // Check every line, clear the complete ones
+      foreach(i, line; _playfield)
+      {
+         if (isFilledLine(line))
+         {
+            // Move all lines down; top line is untouched
+            foreach(j; i..PLAYFIELD_HEIGHT-1)
+               _playfield[j] = _playfield[j + 1];
+
+            // Ensure top line is empty
+            foreach(j; 0..PLAYFIELD_WIDTH)
+               _playfield[PLAYFIELD_HEIGHT-1][j] = CellState.EMPTY;
+         }
+      }
    }
 
    /**
