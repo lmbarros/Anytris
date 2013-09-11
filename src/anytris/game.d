@@ -138,10 +138,7 @@ public class Game
    {
       auto newPiece = _piece.clockwise;
       if (pieceFitsPlayfield(newPiece))
-      {
-         import std.stdio; writefln("CW fits!");
          _piece = newPiece;
-      }
    }
 
    /// Rotates the piece in the counter-clockwise direction.
