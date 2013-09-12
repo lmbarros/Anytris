@@ -74,13 +74,10 @@ public class Game
       return !_gameOver;
    }
 
-   /// Creates a new piece and make it fall.
-   private final void createPiece()
-   {
-      _piece = makePiece(0);
-      _piece.x = 0;
-      _piece.y = PLAYFIELD_VISIBLE_HEIGHT;
-   }
+
+   //
+   // User command handlers
+   //
 
    /// Moves the piece one cell to the left, if possible.
    public final void movePieceLeft()
@@ -112,6 +109,71 @@ public class Game
       _piece.x = _piece.x + 1;
    }
 
+   /// Rotates the piece in the clockwise direction.
+   public final void rotatePieceCW()
+   {
+      auto newPiece = _piece.clockwise;
+      if (pieceFitsPlayfield(newPiece))
+         _piece = newPiece;
+   }
+
+   /// Rotates the piece in the counter-clockwise direction.
+   public final void rotatePieceCCW()
+   {
+      auto newPiece = _piece.counterClockwise;
+      if (pieceFitsPlayfield(newPiece))
+         _piece = newPiece;
+   }
+
+
+   //
+   // Game mechanics
+   //
+
+   /// Creates a new piece and make it fall.
+   private final void createPiece()
+   {
+      _piece = makePiece(0);
+      _piece.x = 0;
+      _piece.y = PLAYFIELD_VISIBLE_HEIGHT;
+   }
+
+   /// Checks for lines clears and handles them.
+   private final void handleLineClears()
+   {
+      // Is a given line filled with blocks?
+      bool isFilledLine(const ref CellState[PLAYFIELD_WIDTH] line)
+      {
+         foreach(cell; line)
+         {
+            if (cell == CellState.EMPTY)
+               return false;
+         }
+
+         return true;
+      }
+
+      // Check every line, clear the complete ones
+      foreach(i, line; _playfield)
+      {
+         if (isFilledLine(line))
+         {
+            // Move all lines down; top line is untouched
+            foreach(j; i..PLAYFIELD_HEIGHT-1)
+               _playfield[j] = _playfield[j + 1];
+
+            // Ensure top line is empty
+            foreach(j; 0..PLAYFIELD_WIDTH)
+               _playfield[PLAYFIELD_HEIGHT-1][j] = CellState.EMPTY;
+         }
+      }
+   }
+
+
+   //
+   // Assorted helpers
+   //
+
    /// Does $(D piece), at its current coordinates, fit the playfield?
    public final bool pieceFitsPlayfield(const Piece piece)
    {
@@ -131,22 +193,6 @@ public class Game
       }
 
       return true;
-   }
-
-   /// Rotates the piece in the clockwise direction.
-   public final void rotatePieceCW()
-   {
-      auto newPiece = _piece.clockwise;
-      if (pieceFitsPlayfield(newPiece))
-         _piece = newPiece;
-   }
-
-   /// Rotates the piece in the counter-clockwise direction.
-   public final void rotatePieceCCW()
-   {
-      auto newPiece = _piece.counterClockwise;
-      if (pieceFitsPlayfield(newPiece))
-         _piece = newPiece;
    }
 
    /**
@@ -189,37 +235,6 @@ public class Game
 
       // Else, can drop
       return true;
-   }
-
-   /// Checks for lines clears and handles them.
-   private final void handleLineClears()
-   {
-      // Is a given line filled with blocks?
-      bool isFilledLine(const ref CellState[PLAYFIELD_WIDTH] line)
-      {
-         foreach(cell; line)
-         {
-            if (cell == CellState.EMPTY)
-               return false;
-         }
-
-         return true;
-      }
-
-      // Check every line, clear the complete ones
-      foreach(i, line; _playfield)
-      {
-         if (isFilledLine(line))
-         {
-            // Move all lines down; top line is untouched
-            foreach(j; i..PLAYFIELD_HEIGHT-1)
-               _playfield[j] = _playfield[j + 1];
-
-            // Ensure top line is empty
-            foreach(j; 0..PLAYFIELD_WIDTH)
-               _playfield[PLAYFIELD_HEIGHT-1][j] = CellState.EMPTY;
-         }
-      }
    }
 
    /**
@@ -280,9 +295,11 @@ public class Game
     * "$(I y), $(I x)" instead of "$(I x), $(I y)". The reason for this is
     * easing the assignment of whole rows, as is done when cleaning filled rows.
     *
-    * TODO: Are the blocks for the falling piece included here?
+    * The blocks of the falling piece are not included here. (When the piece
+    * locks in place, $(D mergePieceWithPlayfield()) is used to add its blocks
+    * to the playfield.)
     */
-   public @property const(CellState[PLAYFIELD_WIDTH][PLAYFIELD_HEIGHT])
+   public final @property const(CellState[PLAYFIELD_WIDTH][PLAYFIELD_HEIGHT])
    playfield() inout
    {
       return _playfield;
@@ -292,7 +309,7 @@ public class Game
    private CellState[PLAYFIELD_WIDTH][PLAYFIELD_HEIGHT] _playfield;
 
    /// The falling piece.
-   public @property const(Piece) piece() inout
+   public final @property const(Piece) piece() inout
    {
       return _piece;
    }
