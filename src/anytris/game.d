@@ -8,6 +8,7 @@
 
 module anytris.game;
 
+import std.algorithm;
 import anytris.cell_state;
 import anytris.constants;
 import anytris.piece;
@@ -113,16 +114,32 @@ public class Game
    public final void rotatePieceCW()
    {
       auto newPiece = _piece.clockwise;
-      if (pieceFitsPlayfield(newPiece))
-         _piece = newPiece;
+
+      auto goLeft = closestObstacleIsToTheRight();
+      auto i = PLAYFIELD_WIDTH;
+      while (--i > 0)
+      {
+         if (pieceFitsPlayfield(newPiece))
+            _piece = newPiece;
+         else
+            newPiece.x = newPiece.x + (goLeft ? -1 : +1);
+      }
    }
 
    /// Rotates the piece in the counter-clockwise direction.
    public final void rotatePieceCCW()
    {
       auto newPiece = _piece.counterClockwise;
-      if (pieceFitsPlayfield(newPiece))
-         _piece = newPiece;
+
+      auto goLeft = closestObstacleIsToTheRight();
+      auto i = PLAYFIELD_WIDTH;
+      while (--i > 0)
+      {
+         if (pieceFitsPlayfield(newPiece))
+            _piece = newPiece;
+         else
+            newPiece.x = newPiece.x + (goLeft ? -1 : +1);
+      }
    }
 
 
@@ -279,6 +296,42 @@ public class Game
       }
 
       return false;
+   }
+
+   /**
+    * Is the closest obstacle to $(D _piece) (either the playfield border or a
+    * block) located to its right side?
+    *
+    * If not, it is to the left. Or, perhaps, equally distant of both sides, but
+    * then it can be treated as being to the left anyway.
+    */
+   private final bool closestObstacleIsToTheRight()
+   {
+      // The limits of _piece's tight bounding square (in playfield coordinates,
+      // intervals closed in both ends)
+      const bbLeft = _piece.x + _piece.minX;
+      const bbRight = _piece.x + _piece.maxX;
+      const bbBottom = _piece.y + _piece.minY;
+      const bbTop = _piece.y + _piece.maxY;
+
+      // Find closest obstacle to the left
+      auto leftDist = int.max;
+      foreach (i; bbBottom..bbTop+1) foreach (j; -1..bbLeft)
+      {
+         if (!validPlayfieldCoords(i,j) || _playfield[i][j] != CellState.EMPTY)
+            leftDist = min(leftDist, bbLeft - j);
+      }
+
+      // Find closest obstacle to the right
+      auto rightDist = int.max;
+      foreach (i; bbBottom..bbTop+1) foreach (j; bbRight..PLAYFIELD_WIDTH+1)
+      {
+         if (!validPlayfieldCoords(i,j) || _playfield[i][j] != CellState.EMPTY)
+            rightDist = min(rightDist, j - bbRight);
+      }
+
+      // Voilà
+      return rightDist < leftDist;
    }
 
    /*
