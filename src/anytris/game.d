@@ -150,7 +150,7 @@ public class Game
    /// Creates a new piece and make it fall.
    private final void createPiece()
    {
-      _piece = makePiece(0);
+      _piece = makePiece(5);
       _piece.x = 0;
       _piece.y = PLAYFIELD_VISIBLE_HEIGHT;
    }

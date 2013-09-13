@@ -8,7 +8,9 @@
 
 module anytris.piece;
 
+import std.algorithm;
 import anytris.cell_state;
+import anytris.constants;
 
 
 /**
@@ -228,17 +230,115 @@ public class Piece
 
 
 /// Creates and returns a random piece of $(D numBlocks) blocks.
-public Piece makePiece(uint numBlocks)
+public Piece makePiece(int numBlocks)
+in
 {
-   // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-   // xxxxxxxxxx just testing....
-   auto piece = new Piece(4);
+   assert(numBlocks > 0 && numBlocks <= MAX_BLOCKS_PER_PIECE);
+}
+body
+{
+   import std.typecons;
 
-   piece._grid[3][1] = true;
-   piece._grid[0][2] = true;
-   piece._grid[1][2] = true;
-   piece._grid[2][2] = true;
-   piece._grid[3][2] = true;
+   alias Tuple!(int, int) coord;
+
+   // Create a temporary grid, large enough to avoid out-of-bound accesses. All
+   // cells are default-initialized to 'false' (meaning they are empty); the
+   // center cell is initialized to 'true' (filled with a block), and will be
+   // the "seed" from which the piece will grow.
+   enum tempGridSize = 2 * MAX_BLOCKS_PER_PIECE + 1;
+   bool tempGrid[tempGridSize][tempGridSize];
+   tempGrid[MAX_BLOCKS_PER_PIECE][MAX_BLOCKS_PER_PIECE] = true;
+
+   // The candidates are the coordinates of cells adjacent to filled
+   // cells. These are the cells that may become filled in the next iteration.
+   // We store them in two data structures: 'candidatesList' for accessing the
+   // nth candidate
+   bool[coord] candidates;
+
+   candidates[tuple(PLAYFIELD_WIDTH + 1, PLAYFIELD_WIDTH)] = true;
+   candidates[tuple(PLAYFIELD_WIDTH - 1, PLAYFIELD_WIDTH)] = true;
+   candidates[tuple(PLAYFIELD_WIDTH, PLAYFIELD_WIDTH + 1)] = true;
+   candidates[tuple(PLAYFIELD_WIDTH, PLAYFIELD_WIDTH - 1)] = true;
+
+   auto i = numBlocks;
+
+   while (--i > 0)
+   {
+      import std.random;
+      auto chosen = uniform(0, candidates.length);
+      auto theCoord = candidates.keys[chosen];
+      assert (theCoord in candidates);
+
+      candidates.remove(theCoord);
+      tempGrid[theCoord[0]][theCoord[1]] = true;
+
+      if (!tempGrid[theCoord[0] + 1][theCoord[1]])
+         candidates[tuple(theCoord[0] + 1, theCoord[1])] = true;
+
+      if (!tempGrid[theCoord[0] - 1][theCoord[1]])
+         candidates[tuple(theCoord[0] - 1, theCoord[1])] = true;
+
+      if (!tempGrid[theCoord[0]][theCoord[1] + 1])
+         candidates[tuple(theCoord[0], theCoord[1] + 1)] = true;
+
+      if (!tempGrid[theCoord[0]][theCoord[1] - 1])
+         candidates[tuple(theCoord[0], theCoord[1] - 1)] = true;
+   }
+
+   // Now 'tempGrid' contains the piece geometry. Let's create a 'Piece' from
+   // this data.
+
+   // First, find the tight bounding box around the piece
+   int minX = int.max;
+   int minY = int.max;
+   int maxX = int.min;
+   int maxY = int.min;
+
+   foreach(y; 0..tempGridSize) foreach(x; 0..tempGridSize)
+   {
+      if (tempGrid[y][x])
+      {
+         if (x < minX) minX = x;
+         if (x > maxX) maxX = x;
+         if (y < minY) minY = y;
+         if (y > maxY) maxY = y;
+      }
+   }
+
+   // Now, grow the box so that it becomes a square
+   const width = maxX - minX + 1;
+   const height = maxY - minY + 1;
+   const newGridSize = max(width, height);
+
+   if (width > height)
+   {
+      const d = width - height;
+      minY -= d/2;
+      maxY += d/2 + d%2;
+   }
+   else if (height > width)
+   {
+      const d = height - width;
+      minX -= d/2;
+      maxX += d/2 + d%2;
+   }
+
+   assert(minX >= 0);
+   assert(minX < tempGridSize);
+   assert(minY >= 0);
+   assert(minY < tempGridSize);
+   assert(maxX >= 0);
+   assert(maxX < tempGridSize);
+   assert(maxY >= 0);
+   assert(maxY < tempGridSize);
+
+   // Finally, copy the temp grid data to a new Piece.
+   auto piece = new Piece(newGridSize);
+   foreach (y; minY..maxY + 1) foreach (x; minX..maxX + 1)
+   {
+      if (tempGrid[y][x])
+         piece._grid[y - minY][x - minX] = true;
+   }
 
    piece.setMinsMaxs();
 
