@@ -171,9 +171,11 @@ public class Game
       }
 
       // Check every line, clear the complete ones
-      foreach(i, line; _playfield)
+      auto i = 0;
+
+      do
       {
-         if (isFilledLine(line))
+         if (isFilledLine(_playfield[i]))
          {
             // Move all lines down; top line is untouched
             foreach(j; i..PLAYFIELD_HEIGHT-1)
@@ -183,7 +185,12 @@ public class Game
             foreach(j; 0..PLAYFIELD_WIDTH)
                _playfield[PLAYFIELD_HEIGHT-1][j] = CellState.EMPTY;
          }
+         else
+         {
+            ++i;
+         }
       }
+      while(i < PLAYFIELD_HEIGHT);
    }
 
 
