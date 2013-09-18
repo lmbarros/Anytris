@@ -1,5 +1,5 @@
 /**
- * AnyTris input.
+ * Anytris input.
  *
  * License: $(LINK2 http://opensource.org/licenses/zlib-license, Zlib License).
  *
@@ -11,7 +11,7 @@ module anytris.input;
 import fewdee.all;
 
 
-/// The high-level commands used by AnyTris.
+/// The high-level commands used by Anytris.
 public enum Commands
 {
    MOVE_LEFT,  /// Moves the piece one block to the right.

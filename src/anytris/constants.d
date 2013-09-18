@@ -1,5 +1,5 @@
 /**
- * Assorted AnyTris constants.
+ * Assorted Anytris constants.
  *
  * Ideally, this file contains only the constants that either are used in more
  * than one module, or that are expected to be changed as groups (I mean,

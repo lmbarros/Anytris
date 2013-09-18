@@ -1,5 +1,5 @@
 /**
- * AnyTris resources.
+ * Anytris resources.
  *
  * License: $(LINK2 http://opensource.org/licenses/zlib-license, Zlib License).
  *
