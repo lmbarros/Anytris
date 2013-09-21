@@ -109,9 +109,9 @@ public class Piece
     * The size of the piece bounding square; the number of blocks in each of its
     * sides.
     */
-   public final @property size_t size() inout
+   public final @property uint size() inout
    {
-      return _grid.length;
+      return cast(uint)(_grid.length);
    }
 
    /**

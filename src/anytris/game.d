@@ -286,8 +286,8 @@ public class Game
     */
    private final bool pieceColliding(int dy, int dx)
    {
-      const len = _piece.grid.length;
-      foreach(i; 0..len) foreach(j; 0..len)
+      const len = cast(int)(_piece.grid.length);
+      foreach(int i; 0..len) foreach(int j; 0..len)
       {
          if (!_piece.grid[i][j])
             continue;

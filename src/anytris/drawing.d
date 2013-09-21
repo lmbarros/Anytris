@@ -81,9 +81,9 @@ body
 private void draw(const Piece piece)
 {
    enum s = BLOCK_SIZE;
-   foreach(i, row; piece.grid)
+   foreach(int i, row; piece.grid)
    {
-      foreach(j, cell; row)
+      foreach(int j, cell; row)
       {
          if (cell)
             drawBlockPlayfield(piece.y + i, piece.x + j, piece.color);
@@ -99,9 +99,9 @@ public void draw(const Game game)
    al_draw_bitmap(ResourceManager.bitmaps["playfield"], 0.0, 0.0, 0);
 
    // The blocks
-   foreach(i, row; game.playfield)
+   foreach(int i, row; game.playfield)
    {
-      foreach(j, state; row)
+      foreach(int j, state; row)
       {
          if (state != CellState.EMPTY)
             drawBlockPlayfield(i, j, state);
