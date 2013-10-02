@@ -1,0 +1,15 @@
+#+STARTUP: overview hidestars odd
+
+* Assorted TODOs
+*** Soft drops
+*** Hard drops
+*** Score
+*** Levels
+*** Say "game over" decently
+* Polishing
+*** Play and stop audio with fade in/out effects
+*** Nicer background
+*** Draw some blocks in the title screen
+*** Add a decent menu to the title screen
+*** Add some sound effects
+*** Use some visual effects for line clearing
