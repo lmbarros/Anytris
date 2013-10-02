@@ -15,7 +15,7 @@ import anytris.piece;
 
 
 /// Time, in seconds, to drop the piece by one row.
-private enum dropTime = 0.2;
+private enum dropTime = 0.5;
 
 
 /// The states the piece can be in.
@@ -49,9 +49,21 @@ private bool validPlayfieldCoords(int y, int x)
 /// The game logic, rules and execution.
 public class Game
 {
-   /// Constructs the $(D Game).
-   public this()
+   /**
+    * Constructs the $(D Game).
+    *
+    * Parameters:
+    *    numBlocksPerPiece = Number of blocks to use when creating pieces.
+    */
+   public this(int numBlocksPerPiece)
+   in
    {
+      assert(numBlocksPerPiece > 0);
+      assert(numBlocksPerPiece <= MAX_BLOCKS_PER_PIECE);
+   }
+   body
+   {
+      _numBlocksPerPiece = numBlocksPerPiece;
       createPiece();
    }
 
@@ -150,7 +162,7 @@ public class Game
    /// Creates a new piece and make it fall.
    private final void createPiece()
    {
-      _piece = makePiece(5);
+      _piece = makePiece(_numBlocksPerPiece);
       _piece.x = 0;
       _piece.y = PLAYFIELD_VISIBLE_HEIGHT;
    }
@@ -373,6 +385,9 @@ public class Game
    {
       return _piece;
    }
+
+   /// The number of blocks used to make the pieces.
+   private const int _numBlocksPerPiece;
 
    /// Ditto
    private Piece _piece;

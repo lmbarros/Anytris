@@ -17,39 +17,42 @@ import anytris.input;
 /// The "in game" state -- where the fun happens!
 public class InGameState: GameState
 {
-   /// Constructs the state.
-   public this()
+   /**
+    * Constructs the state.
+    *
+    * Parameters:
+    *    numBlocksPerPiece = Number of blocks to use when creating pieces.
+    */
+   public this(int numBlocksPerPiece)
    {
-      _game = new Game();
+      _game = new Game(numBlocksPerPiece);
 
       // Put resources in easy to access variables
       _musicBG = ResourceManager.streams["inGame"];
 
       // Handle game events
-      // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      // xxxxxxxxx store ids, remove upon destruction
-      InputManager.addCommandHandler(
+      _inputHandlerIDs ~= InputManager.addCommandHandler(
          Commands.MOVE_LEFT,
          delegate(in ref InputHandlerParam param)
          {
             _game.movePieceLeft();
          });
 
-      InputManager.addCommandHandler(
+      _inputHandlerIDs ~= InputManager.addCommandHandler(
          Commands.MOVE_RIGHT,
          delegate(in ref InputHandlerParam param)
          {
             _game.movePieceRight();
          });
 
-      InputManager.addCommandHandler(
+      _inputHandlerIDs ~= InputManager.addCommandHandler(
          Commands.ROTATE_CW,
          delegate(in ref InputHandlerParam param)
          {
             _game.rotatePieceCW();
          });
 
-      InputManager.addCommandHandler(
+      _inputHandlerIDs ~= InputManager.addCommandHandler(
          Commands.ROTATE_CCW,
          delegate(in ref InputHandlerParam param)
          {
@@ -88,14 +91,27 @@ public class InGameState: GameState
          });
 
       // Start the background music
+      _musicBG.playMode = ALLEGRO_PLAYMODE.ALLEGRO_PLAYMODE_LOOP;
       _musicBG.play();
    }
 
    /// Destroys the state.
    public ~this()
    {
+      foreach (handlerID; _inputHandlerIDs)
+         InputManager.removeCommandHandler(handlerID);
+
       _musicBG.stop();
    }
+
+   /**
+    * The IDs of the input handlers used by this state.
+    *
+    * We have to store them in order to remove them when the state is
+    * destroyed. If we don't remove them, the handlers will remain active even
+    * after the state is destroyed (with nasty results, it goes without saying).
+    */
+   private CommandHandlerID[] _inputHandlerIDs;
 
    /// The game.
    private Game _game;

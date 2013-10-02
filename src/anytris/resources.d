@@ -20,6 +20,11 @@ public void loadResources()
    ResourceManager.bitmaps.add("playfield", new Bitmap("data/playfield.png"));
    ResourceManager.bitmaps.add("block", new Bitmap("data/block.png"));
 
+   // Fonts
+   ResourceManager.fonts.add("title", new Font("data/lato-k.otf", 180));
+   ResourceManager.fonts.add("subtitle", new Font("data/lato.otf", 32));
+   ResourceManager.fonts.add("menu", new Font("data/lato.otf", 40));
+
    // Audio streams
    ResourceManager.streams.add("intro", new AudioStream("data/Miris_Magic_Dance.ogg"));
    ResourceManager.streams.add("inGame", new AudioStream("data/Padanaya_Blokov.ogg"));

@@ -8,9 +8,9 @@
 
 import fewdee.all;
 import anytris.constants;
-import anytris.in_game_state;
 import anytris.input;
 import anytris.resources;
+import anytris.title_screen_state;
 
 
 void main()
@@ -32,7 +32,7 @@ void main()
       DisplayManager.createDisplay("main", dp);
 
       // Run!
-      run(new InGameState());
+      run(new TitleScreenState());
 
       return 0;
    });
