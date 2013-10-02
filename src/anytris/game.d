@@ -18,20 +18,6 @@ import anytris.piece;
 private enum dropTime = 0.5;
 
 
-/// The states the piece can be in.
-private enum PieceState
-{
-   /// Piece is falling.
-   FALLING,
-
-   /**
-    * Piece is touching blocks underneath it. It still can be moved one block
-    * left or right until it locks in place.
-    */
-   TOUCHING,
-}
-
-
 /**
  * Are the given coordinates valid playfield coordinates?
  *
@@ -391,9 +377,6 @@ public class Game
 
    /// Ditto
    private Piece _piece;
-
-   /// The piece state.
-   private PieceState _pieceState;
 
    /// Time remaining until the next time the piece drops one row.
    private double _timeToDrop = dropTime;
