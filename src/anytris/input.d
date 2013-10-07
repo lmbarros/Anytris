@@ -10,6 +10,12 @@ module anytris.input;
 
 import fewdee.all;
 
+/**
+ * The time, in seconds, between two consecutive left/right piece movements
+ * while the corresponding key is kept pressed.
+ */
+enum leftRightRepeatingInterval = 0.15;
+
 
 /// The high-level commands used by Anytris.
 public enum Commands
@@ -31,10 +37,16 @@ public void setupInput()
    with (Commands)
    {
       InputManager.addCommandTrigger(
-         MOVE_LEFT, new KeyDownTrigger(ALLEGRO_KEY_LEFT));
+         MOVE_LEFT, new RepeatingTrigger(
+            new KeyDownTrigger(ALLEGRO_KEY_LEFT),
+            new KeyUpTrigger(ALLEGRO_KEY_LEFT),
+            leftRightRepeatingInterval));
 
       InputManager.addCommandTrigger(
-         MOVE_RIGHT, new KeyDownTrigger(ALLEGRO_KEY_RIGHT));
+         MOVE_RIGHT, new RepeatingTrigger(
+            new KeyDownTrigger(ALLEGRO_KEY_RIGHT),
+            new KeyUpTrigger(ALLEGRO_KEY_RIGHT),
+            leftRightRepeatingInterval));
 
       InputManager.addCommandTrigger(
          ROTATE_CW, new KeyDownTrigger(ALLEGRO_KEY_X));

@@ -1,7 +1,6 @@
 #+STARTUP: overview hidestars odd
 
 * Assorted TODOs
-*** Keep moving pieces while key is pressed
 *** Soft drops
 *** Hard drops
 *** Score
