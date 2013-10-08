@@ -1,8 +1,6 @@
 #+STARTUP: overview hidestars odd
 
 * Assorted TODOs
-*** Soft drops
-*** Hard drops
 *** Score
 *** Levels
 *** Say "game over" decently
