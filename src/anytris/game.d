@@ -140,6 +140,13 @@ public class Game
       }
    }
 
+   /// Drops the piece one block (AKA soft drop).
+   public final void softDrop()
+   {
+      dropPiece();
+      _timeToDrop = dropTime;
+   }
+
 
    //
    // Game mechanics

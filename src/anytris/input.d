@@ -16,6 +16,12 @@ import fewdee.all;
  */
 enum leftRightRepeatingInterval = 0.15;
 
+/**
+ * The time, in seconds, between two consecutive soft drop steps (while
+ * maintaining the key pressed).
+ */
+enum downRepeatingInterval = 0.1;
+
 
 /// The high-level commands used by Anytris.
 public enum Commands
@@ -53,5 +59,11 @@ public void setupInput()
 
       InputManager.addCommandTrigger(
          ROTATE_CCW, new KeyDownTrigger(ALLEGRO_KEY_Z));
+
+      InputManager.addCommandTrigger(
+         SOFT_DROP, new RepeatingTrigger(
+            new KeyDownTrigger(ALLEGRO_KEY_DOWN),
+            new KeyUpTrigger(ALLEGRO_KEY_DOWN),
+            downRepeatingInterval));
    }
 }
