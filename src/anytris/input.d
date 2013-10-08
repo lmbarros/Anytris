@@ -65,5 +65,8 @@ public void setupInput()
             new KeyDownTrigger(ALLEGRO_KEY_DOWN),
             new KeyUpTrigger(ALLEGRO_KEY_DOWN),
             downRepeatingInterval));
+
+      InputManager.addCommandTrigger(
+         HARD_DROP, new KeyDownTrigger(ALLEGRO_KEY_SPACE));
    }
 }

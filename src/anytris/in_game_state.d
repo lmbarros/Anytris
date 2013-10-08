@@ -66,6 +66,13 @@ public class InGameState: GameState
             _game.softDrop();
          });
 
+      _inputHandlerIDs ~= InputManager.addCommandHandler(
+         Commands.HARD_DROP,
+         delegate(in ref InputHandlerParam param)
+         {
+            _game.hardDrop();
+         });
+
       // Quit if "ESC" is pressed.
       addHandler(
          ALLEGRO_EVENT_KEY_DOWN,

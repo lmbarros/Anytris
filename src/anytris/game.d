@@ -147,6 +147,15 @@ public class Game
       _timeToDrop = dropTime;
    }
 
+   /// Drops the piece until it locks in place.
+   public final void hardDrop()
+   {
+      while (dropPiece())
+         continue;
+
+      _timeToDrop = dropTime;
+   }
+
 
    //
    // Game mechanics
@@ -225,16 +234,21 @@ public class Game
    }
 
    /**
-    * Drops a piece by one row.
+    * Drops a piece by one row, if possible.
     *
     * This does also does all the checks for game over, for filled rows
     * (including removing the filled rows), etc.
+    *
+    * Returns:
+    *    $(D true) of the piece was actually dropped; $(D false) if it couldn't
+    *    (because there was no space left in the playfield.)
     */
-   private final void dropPiece()
+   private final bool dropPiece()
    {
       if (canDropPiece)
       {
          _piece.y = _piece.y - 1;
+         return true;
       }
       else
       {
@@ -248,6 +262,8 @@ public class Game
             handleLineClears();
             createPiece();
          }
+
+         return false;
       }
    }
 
