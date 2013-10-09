@@ -4,6 +4,8 @@
 *** Score
 *** Levels
 *** Say "game over" decently
+*** Pause screen
+    - Don't forget to hide the playfield while paused!
 * Polishing
 *** Play and stop audio with fade in/out effects
 *** Nicer background
