@@ -1,7 +1,6 @@
 #+STARTUP: overview hidestars odd
 
 * Assorted TODOs
-*** Levels
 *** Say "game over" decently
 *** Show next piece
 *** Pause screen

@@ -14,8 +14,17 @@ import anytris.constants;
 import anytris.piece;
 
 
-/// Time, in seconds, to drop the piece by one row.
-private enum dropTime = 0.5;
+/// Time, in seconds, to drop the piece by one row in level 1.
+private enum baseDropTime = 0.5;
+
+/// Number of lines that must be cleared to go to the next level.
+private enum linesPerLevel = 10;
+
+/**
+ * The amount by which $(D baseDropTime) is multiplied when a new level is
+ * reached.
+ */
+private enum levelDropTimeMultiplier = 0.9;
 
 
 /**
@@ -67,7 +76,7 @@ public class Game
       if (_timeToDrop <= 0)
       {
          dropPiece();
-         _timeToDrop += dropTime;
+         _timeToDrop += _dropInterval;
       }
 
       return !_gameOver;
@@ -144,7 +153,7 @@ public class Game
    public final void softDrop()
    {
       dropPiece();
-      _timeToDrop = dropTime;
+      _timeToDrop = _dropInterval;
    }
 
    /// Drops the piece until it locks in place.
@@ -153,7 +162,7 @@ public class Game
       while (dropPiece())
          continue;
 
-      _timeToDrop = dropTime;
+      _timeToDrop = _dropInterval;
    }
 
 
@@ -211,7 +220,16 @@ public class Game
 
       // Update the score
       if (numClearedLines > 0)
+      {
          _score += 2 ^^ (numClearedLines) * _level * _numBlocksPerPiece;
+         _linesToNextLevel -= numClearedLines;
+         if (_linesToNextLevel <= 0)
+         {
+            _linesToNextLevel += linesPerLevel;
+            ++_level;
+            _timeToDrop *= levelDropTimeMultiplier;
+         }
+      }
    }
 
 
@@ -402,6 +420,9 @@ public class Game
       return _piece;
    }
 
+   /// Ditto
+   private Piece _piece;
+
    /// The game level.
    public @property int level() inout
    {
@@ -423,11 +444,14 @@ public class Game
    /// The number of blocks used to make the pieces.
    private const int _numBlocksPerPiece;
 
-   /// Ditto
-   private Piece _piece;
-
    /// Time remaining until the next time the piece drops one row.
-   private double _timeToDrop = dropTime;
+   private double _timeToDrop = baseDropTime;
+
+   /// Time, in seconds, between two consecutive, gravity-induced piece drops.
+   private double _dropInterval = baseDropTime;
+
+   /// Number of lines to clear to reach the next level.
+   private int _linesToNextLevel = linesPerLevel;
 
    /// Is the game over?
    private bool _gameOver = false;
