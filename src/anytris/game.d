@@ -187,10 +187,13 @@ public class Game
       // Check every line, clear the complete ones
       auto i = 0;
 
+      auto numClearedLines = 0;
       do
       {
          if (isFilledLine(_playfield[i]))
          {
+            ++numClearedLines;
+
             // Move all lines down; top line is untouched
             foreach(j; i..PLAYFIELD_HEIGHT-1)
                _playfield[j] = _playfield[j + 1];
@@ -205,6 +208,10 @@ public class Game
          }
       }
       while(i < PLAYFIELD_HEIGHT);
+
+      // Update the score
+      if (numClearedLines > 0)
+         _score += 2 ^^ (numClearedLines) * _level * _numBlocksPerPiece;
    }
 
 
