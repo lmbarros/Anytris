@@ -8,6 +8,8 @@
 
 module anytris.drawing;
 
+import std.conv;
+import std.string;
 import fewdee.all;
 import anytris.cell_state;
 import anytris.constants;
@@ -95,8 +97,22 @@ private void draw(const Piece piece)
 /// Draws the whole screen, according to the $(D game) state.
 public void draw(const Game game)
 {
-   // Background
+   void drawLabel(string text, float x, float y)
+   body
+   {
+      const font = ResourceManager.fonts["labels"];
+      al_draw_text(font, al_map_rgb(255, 255, 255), x, y, ALLEGRO_ALIGN_LEFT,
+                   text.toStringz);
+   }
+
+
+   // Background and text labels
    al_draw_bitmap(ResourceManager.bitmaps["playfield"], 0.0, 0.0, 0);
+   drawLabel("Next", 575, 80);
+   drawLabel("Score", 575, 390);
+   drawLabel("Level", 575, 485);
+   drawLabel(to!string(game.score), 575, 432);
+   drawLabel(to!string(game.level), 575, 527);
 
    // The blocks
    foreach(int i, row; game.playfield)

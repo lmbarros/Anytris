@@ -24,6 +24,7 @@ public void loadResources()
    ResourceManager.fonts.add("title", new Font("data/lato-k.otf", 180));
    ResourceManager.fonts.add("subtitle", new Font("data/lato.otf", 32));
    ResourceManager.fonts.add("menu", new Font("data/lato.otf", 40));
+   ResourceManager.fonts.add("labels", new Font("data/lato.otf", 30));
 
    // Audio streams
    ResourceManager.streams.add("intro", new AudioStream("data/Miris_Magic_Dance.ogg"));

@@ -395,6 +395,24 @@ public class Game
       return _piece;
    }
 
+   /// The game level.
+   public @property int level() inout
+   {
+      return _level;
+   }
+
+   /// Ditto
+   private int _level = 1;
+
+   /// The game score.
+   public @property int score() inout
+   {
+      return _score;
+   }
+
+   /// Ditto
+   private int _score = 0;
+
    /// The number of blocks used to make the pieces.
    private const int _numBlocksPerPiece;
 
