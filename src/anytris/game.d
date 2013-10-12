@@ -15,7 +15,7 @@ import anytris.piece;
 
 
 /// Time, in seconds, to drop the piece by one row in level 1.
-private enum baseDropTime = 0.5;
+private enum baseDropTime = 1.0;
 
 /// Number of lines that must be cleared to go to the next level.
 private enum linesPerLevel = 10;
@@ -24,7 +24,7 @@ private enum linesPerLevel = 10;
  * The amount by which $(D baseDropTime) is multiplied when a new level is
  * reached.
  */
-private enum levelDropTimeMultiplier = 0.9;
+private enum levelDropTimeMultiplier = 0.75;
 
 
 /**
