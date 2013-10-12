@@ -2,7 +2,6 @@
 
 * Assorted TODOs
 *** Say "game over" decently
-*** Show next piece
 *** Pause screen
     - Don't forget to hide the playfield while paused!
 * Polishing

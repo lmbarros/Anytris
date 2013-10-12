@@ -79,17 +79,27 @@ body
 }
 
 
-/// Draw the piece in the playfield, at its current coordinates.
+/// Draws the piece in the playfield, at its current coordinates.
 private void draw(const Piece piece)
 {
-   enum s = BLOCK_SIZE;
-   foreach(int i, row; piece.grid)
+   foreach(int i, row; piece.grid) foreach(int j, cell; row)
    {
-      foreach(int j, cell; row)
-      {
-         if (cell)
-            drawBlockPlayfield(piece.y + i, piece.x + j, piece.color);
-      }
+      if (cell)
+         drawBlockPlayfield(piece.y + i, piece.x + j, piece.color);
+   }
+}
+
+/// Draws the piece in the "next piece" box.
+private void drawNextPiece(const Piece piece)
+{
+   enum s = BLOCK_SIZE;
+   enum x0 = 570;
+   enum y0 = 126;
+
+   foreach(int i, row; piece.grid) foreach(int j, cell; row)
+   {
+      if (cell)
+         drawBlockScreen(x0 + i * s, y0 + j * s, piece.color);
    }
 }
 
@@ -124,6 +134,7 @@ public void draw(const Game game)
       }
    }
 
-   // The piece
+   // The piece and the next piece
    game.piece.draw();
+   game.nextPiece.drawNextPiece();
 }

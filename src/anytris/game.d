@@ -59,7 +59,7 @@ public class Game
    body
    {
       _numBlocksPerPiece = numBlocksPerPiece;
-      createPiece();
+      nextPiecePlease();
    }
 
    /**
@@ -170,10 +170,22 @@ public class Game
    // Game mechanics
    //
 
-   /// Creates a new piece and make it fall.
-   private final void createPiece()
+   /**
+    * Makes the next piece fall.
+    *
+    * This handles all the "next piece" versus "current piece" logic, including
+    * when called for the first time (that is, when $(D _piece) and $(D
+    * _nextPiece) are both $(D null) and need to be created for the first time).
+    */
+   private final void nextPiecePlease()
    {
-      _piece = makePiece(_numBlocksPerPiece);
+      if (_nextPiece is null)
+         _piece = makePiece(_numBlocksPerPiece);
+      else
+         _piece = _nextPiece;
+
+      _nextPiece = makePiece(_numBlocksPerPiece);
+
       _piece.x = 0;
       _piece.y = PLAYFIELD_VISIBLE_HEIGHT;
    }
@@ -285,7 +297,7 @@ public class Game
          {
             mergePieceWithPlayfield();
             handleLineClears();
-            createPiece();
+            nextPiecePlease();
          }
 
          return false;
@@ -421,7 +433,16 @@ public class Game
    }
 
    /// Ditto
-   private Piece _piece;
+   private Piece _piece = null;
+
+   /// The next piece to be used.
+   public final @property const(Piece) nextPiece() inout
+   {
+      return _nextPiece;
+   }
+
+   /// Ditto
+   private Piece _nextPiece = null;
 
    /// The game level.
    public @property int level() inout
