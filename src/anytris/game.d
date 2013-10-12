@@ -227,7 +227,7 @@ public class Game
          {
             _linesToNextLevel += linesPerLevel;
             ++_level;
-            _timeToDrop *= levelDropTimeMultiplier;
+            _dropInterval *= levelDropTimeMultiplier;
          }
       }
    }
