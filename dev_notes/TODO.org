@@ -1,7 +1,6 @@
 #+STARTUP: overview hidestars odd
 
 * Assorted TODOs
-*** Say "game over" decently
 *** Pause screen
     - Don't forget to hide the playfield while paused!
 * Polishing

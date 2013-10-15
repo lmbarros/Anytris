@@ -11,6 +11,7 @@ module anytris.in_game_state;
 import fewdee.all;
 import anytris.game;
 import anytris.drawing;
+import anytris.game_over_state;
 import anytris.input;
 
 
@@ -88,11 +89,7 @@ public class InGameState: GameState
          delegate(in ref ALLEGRO_EVENT event)
          {
             if (!_game.tick(event.user.deltaTime))
-            {
-               import std.stdio;
-               writefln("Game over!");
-               popState();
-            }
+               replaceState(new GameOverState(_game.score));
          });
 
       // Draw

@@ -25,6 +25,9 @@ public void loadResources()
    ResourceManager.fonts.add("subtitle", new Font("data/lato.otf", 32));
    ResourceManager.fonts.add("menu", new Font("data/lato.otf", 40));
    ResourceManager.fonts.add("labels", new Font("data/lato.otf", 30));
+   ResourceManager.fonts.add("gameOver", new Font("data/lato-k.otf", 60));
+   ResourceManager.fonts.add("gameOverScore", new Font("data/lato-b.otf", 40));
+   ResourceManager.fonts.add("gameOverPressEsc", new Font("data/lato.otf", 40));
 
    // Audio streams
    ResourceManager.streams.add("intro", new AudioStream("data/Miris_Magic_Dance.ogg"));
