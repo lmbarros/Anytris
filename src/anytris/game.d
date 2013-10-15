@@ -445,7 +445,7 @@ public class Game
    private Piece _nextPiece = null;
 
    /// The game level.
-   public @property int level() inout
+   public final @property int level() inout
    {
       return _level;
    }
@@ -454,7 +454,7 @@ public class Game
    private int _level = 1;
 
    /// The game score.
-   public @property int score() inout
+   public final @property int score() inout
    {
       return _score;
    }
