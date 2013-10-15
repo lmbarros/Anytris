@@ -108,7 +108,6 @@ private void drawNextPiece(const Piece piece)
 public void draw(const Game game)
 {
    void drawLabel(string text, float x, float y)
-   body
    {
       const font = ResourceManager.fonts["labels"];
       al_draw_text(font, al_map_rgb(255, 255, 255), x, y, ALLEGRO_ALIGN_LEFT,
