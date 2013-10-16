@@ -31,14 +31,11 @@ public class TitleScreenState: GameState
          delegate(in ref ALLEGRO_EVENT event)
          {
             al_clear_to_color(al_map_rgb_f(0.5, 0.15, 0.15));
-            drawText(ResourceManager.fonts["title"], "Anytris", 25, 10);
-            drawText(ResourceManager.fonts["subtitle"],
-                     "Tetris was Tetris for a reason", 350, 187);
+            drawText("title", "Anytris", 25, 10);
+            drawText("subtitle", "Tetris was Tetris for a reason", 350, 187);
 
-            drawText(ResourceManager.fonts["menu"],
-                     "Press 1 to 0 (but not 4) to play", 50, 400);
-            drawText(ResourceManager.fonts["menu"],
-                     "Press Esc to quit", 50, 450);
+            drawText("menu", "Press 1 to 0 (but not 4) to play", 50, 400);
+            drawText("menu", "Press Esc to quit", 50, 450);
          });
 
       // Handle key down events
@@ -95,18 +92,6 @@ public class TitleScreenState: GameState
    {
       super.onDigOut();
       _musicBG.play();
-   }
-
-   // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-   private void drawText(Font font, string text, float x, float y)
-   in
-   {
-      assert(font !is null);
-   }
-   body
-   {
-      al_draw_text(font, al_map_rgb(255, 255, 255), x, y, ALLEGRO_ALIGN_LEFT,
-                   text.toStringz);
    }
 
    /// The background music.

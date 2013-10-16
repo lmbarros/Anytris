@@ -137,3 +137,30 @@ public void draw(const Game game)
    game.piece.draw();
    game.nextPiece.drawNextPiece();
 }
+
+
+/**
+ * Draws some white text with a given font, at a given position.
+ *
+ * Parameters:
+ *    fontKey = The key (in the $(D ResourceManager) of the desired font.
+ *    text = The text to draw.
+ *    x = The horizontal coordinate of the position to draw.
+ *    y = The vertical coordinate of the position to draw.
+ *    alignment = The text alignment (one of the $(D ALLEGRO_ALIGN_*)
+ *       constants).
+ */
+public void drawText(string fontKey, string text, float x, float y,
+                     int alignment = ALLEGRO_ALIGN_LEFT)
+in
+{
+   assert(ResourceManager.fonts[fontKey] !is null);
+}
+body
+{
+   import std.string;
+
+   auto font = ResourceManager.fonts[fontKey];
+   al_draw_text(font, al_map_rgb(255, 255, 255), x, y, alignment,
+                text.toStringz);
+}

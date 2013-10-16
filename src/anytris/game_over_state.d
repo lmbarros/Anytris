@@ -11,6 +11,7 @@ module anytris.game_over_state;
 import std.conv;
 import std.string;
 import fewdee.all;
+import anytris.drawing;
 
 
 /// The "game over" state.
@@ -35,19 +36,12 @@ public class GameOverState: GameState
          {
             al_clear_to_color(al_map_rgb_f(0.0, 0.0, 0.0));
 
-            al_draw_text(
-               ResourceManager.fonts["gameOver"], al_map_rgb(255, 255, 255),
-               x, 200, ALLEGRO_ALIGN_CENTRE, "Game Over");
-
-            al_draw_text(
-               ResourceManager.fonts["gameOverScore"],
-               al_map_rgb(255, 255, 255), x, 300, ALLEGRO_ALIGN_CENTRE,
-               ("You scored " ~ to!string(_score) ~ " points").toStringz);
-
-            al_draw_text(
-               ResourceManager.fonts["gameOverPressEsc"],
-               al_map_rgb(255, 255, 255), x, 350, ALLEGRO_ALIGN_CENTRE,
-               "Press Esc to continue");
+            drawText("gameOver", "Game Over", x, 200, ALLEGRO_ALIGN_CENTRE);
+            drawText("gameOverScore",
+                     "You scored " ~ to!string(_score) ~ " points",
+                     x, 300, ALLEGRO_ALIGN_CENTRE);
+            drawText("gameOverPressEsc", "Press Esc to continue",
+                     x, 350, ALLEGRO_ALIGN_CENTRE);
          });
 
       // Handle key down events
