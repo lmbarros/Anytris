@@ -13,6 +13,7 @@ import anytris.game;
 import anytris.drawing;
 import anytris.game_over_state;
 import anytris.input;
+import anytris.paused_state;
 
 
 /// The "in game" state -- where the fun happens!
@@ -80,7 +81,7 @@ public class InGameState: GameState
          delegate(in ref ALLEGRO_EVENT event)
          {
             if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
-               popState();
+               pushState(new PausedState());
          });
 
       // Tick
@@ -113,6 +114,21 @@ public class InGameState: GameState
          InputManager.removeCommandHandler(handlerID);
 
       _musicBG.stop();
+   }
+
+   // Inherit docs.
+   public override void onBury()
+   {
+      super.onBury();
+      wantsToDraw = true;
+      _musicBG.pause();
+   }
+
+   // Inherit docs.
+   public override void onDigOut()
+   {
+      super.onDigOut();
+      _musicBG.play();
    }
 
    /**

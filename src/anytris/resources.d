@@ -19,6 +19,7 @@ public void loadResources()
    // Bitmaps
    ResourceManager.bitmaps.add("playfield", new Bitmap("data/playfield.png"));
    ResourceManager.bitmaps.add("block", new Bitmap("data/block.png"));
+   ResourceManager.bitmaps.add("paused", new Bitmap("data/paused.png"));
 
    // Fonts
    ResourceManager.fonts.add("title", new Font("data/lato-k.otf", 180));
