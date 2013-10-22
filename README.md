@@ -31,6 +31,19 @@ fixed during a game. Also unlike Anytris (but like Tetris), ntris
 seems to be designed to be fun.
 
 
+Licensing and download
+----------------------
+
+Anytris was created as simple showcase for the
+[FewDee](https://bitbucket.org/lmb/fewdee) library. As FewDee, Anytris
+is licensed under the [Zlib
+license](http://opensource.org/licenses/zlib-license).
+
+Its "official" Mercurial repository is located at
+[BitBucket](https://bitbucket.org/lmb/anytris), and there is a Git
+mirror at [GitHub](https://github.com/lmbarros/Anytris).
+
+
 Author
 ------
 
