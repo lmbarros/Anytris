@@ -9,10 +9,7 @@
 module anytris.paused_state;
 
 import fewdee.all;
-// import anytris.game;
-// import anytris.in_game_state;
 import anytris.drawing;
-// import anytris.input;
 
 
 /// The "paused" state.
