@@ -11,6 +11,7 @@ module anytris.title_screen_state;
 import std.string;
 import fewdee.all;
 import anytris.game;
+import anytris.credits_screen_state;
 import anytris.in_game_state;
 import anytris.drawing;
 import anytris.input;
@@ -35,7 +36,8 @@ public class TitleScreenState: GameState
             drawText("subtitle", "Tetris was Tetris for a reason", 350, 187);
 
             drawText("menu", "Press 1 to 0 (but not 4) to play", 50, 400);
-            drawText("menu", "Press Esc to quit", 50, 450);
+            drawText("menu", "Press C for credits", 50, 450);
+            drawText("menu", "Press Esc to quit", 50, 500);
          });
 
       // Handle key down events
@@ -46,6 +48,10 @@ public class TitleScreenState: GameState
                     {
                        popState();
                        return;
+                    }
+                    else if (event.keyboard.keycode == ALLEGRO_KEY_C)
+                    {
+                       pushState(new CreditsScreenState());
                     }
 
                     int numBlocksPerPiece = 0;

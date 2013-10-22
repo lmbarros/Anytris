@@ -8,7 +8,6 @@
 
 module anytris.paused_state;
 
-// import std.string;
 import fewdee.all;
 // import anytris.game;
 // import anytris.in_game_state;
